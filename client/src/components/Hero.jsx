@@ -6,7 +6,7 @@ const Hero = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="bg-white dark:bg-gray-900 min-h-[100vh] flex items-center">
+    <section className="bg-white dark:bg-gray-900 min-h-[100vh] flex items-center mx-10 px-10">
       <div className="container mx-auto px-6 py-16 flex flex-col-reverse lg:flex-row items-center justify-between gap-12">
         {/* Text Content */}
         <div className="flex-1 text-center lg:text-left">
