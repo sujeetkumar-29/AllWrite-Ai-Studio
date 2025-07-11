@@ -2,9 +2,20 @@
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
-*{
+
+* {
   font-family: "Outfit", sans-serif;
 }
-@theme{
+
+@theme {
   --color-primary: #ffae42;
+}
+
+.reset-tw,
+.reset-tw * {
+  all: revert !important;
+}
+
+.cl-drawerRoot {
+  z-index: 10;
 }
