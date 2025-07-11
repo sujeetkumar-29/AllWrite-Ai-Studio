@@ -28,7 +28,7 @@ const Hero = () => {
         </div>
 
         {/* Image or Illustration */}
-        <div className="flex-1 my-15">
+        <div className="flex-1 my-14">
           <img
             src={assets.ai_image}
             alt="AI Illustration"
