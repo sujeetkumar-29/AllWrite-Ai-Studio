@@ -16,7 +16,7 @@ const GenerateImages = () => {
   const [publish, setPublish] = useState(false)
 
   const onSubmitHandler = async (e) => {
-    e.preventDafault()
+    e.preventDefault()
   }
 
   return (

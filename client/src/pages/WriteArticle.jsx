@@ -12,7 +12,7 @@ const WriteArticle = () => {
   const [input, setInput] = useState('')
 
   const onSubmitHandler = async (e) => {
-    e.preventDåfault()
+    e.preventDefault()
   }
 
 
