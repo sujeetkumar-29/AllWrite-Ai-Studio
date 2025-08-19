@@ -4,6 +4,8 @@ import { v2 as cloudinary } from 'cloudinary'
 import axios from "axios";
 import fs from 'fs'
 import pdf from 'pdf-parse/lib/pdf-parse.js'
+import { clerkClient } from "@clerk/express"
+
 
 
 

@@ -1,5 +1,5 @@
 import { clerkClient } from "@clerk/express"
-// Middleware to check userld and hasPremiumP1an
+// Middleware to check userId and hasPremiumPlan
 
 export const auth = async (req, res, next) => {
     try {
