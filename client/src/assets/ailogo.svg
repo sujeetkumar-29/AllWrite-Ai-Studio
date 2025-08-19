@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="160" viewBox="0 0 480 160" fill="none">
+  <!-- Gradient Definitions -->
+  <defs>
+    <linearGradient id="grad2" x1="0" y1="0" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#9333EA"/>
+      <stop offset="100%" stop-color="#3B82F6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Icon: Chat Bubble + Neural Network -->
+  <g transform="translate(30,30)">
+    <!-- Chat bubble base -->
+    <path d="M0 30 a30 30 0 0 1 30 -30 h50 a30 30 0 0 1 30 30 v30 a30 30 0 0 1 -30 30 h-25 l-20 20 v-20 h-5 a30 30 0 0 1 -30 -30 z" 
+          fill="url(#grad2)" stroke="#1E293B" stroke-width="2"/>
+    
+    <!-- Neural network nodes inside -->
+    <circle cx="35" cy="40" r="5" fill="white"/>
+    <circle cx="65" cy="30" r="5" fill="white"/>
+    <circle cx="85" cy="50" r="5" fill="white"/>
+    <circle cx="55" cy="60" r="5" fill="white"/>
+
+    <!-- Connecting lines -->
+    <line x1="35" y1="40" x2="65" y2="30" stroke="white" stroke-width="2"/>
+    <line x1="65" y1="30" x2="85" y2="50" stroke="white" stroke-width="2"/>
+    <line x1="35" y1="40" x2="55" y2="60" stroke="white" stroke-width="2"/>
+    <line x1="55" y1="60" x2="85" y2="50" stroke="white" stroke-width="2"/>
+  </g>
+
+  <!-- Inline Text: "AllWrite AI" -->
+  <text x="150" y="95" font-family="Inter, Poppins, system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="56" font-weight="700" fill="url(#grad2)">
+    AllWrite
+    <tspan dx="10" font-weight="400" fill="#475569">AI</tspan>
+  </text>
+</svg>

@@ -4,11 +4,12 @@ import { assets } from '../assets/assets'
 import { Menu, X } from 'lucide-react'
 import Sidebar from '../components/Sidebar'
 import { SignIn, useUser } from '@clerk/clerk-react'
+import DarkModeToggler from '../components/DarkModeToggle'
 
 const Layout = () => {
   const navigate = useNavigate()
   const [sidebar, setSidebar] = useState(false)
-  const {user }= useUser()
+  const { user } = useUser()
 
 
   return user ? (
@@ -16,7 +17,10 @@ const Layout = () => {
 
       <nav className='w-full px-8 min-h-14 flex items-center justify-between border-b border-gray-200'>
 
-        < img src={assets.logo} alt="logo" onClick={() => navigate('/')} />
+        < img src={assets.ailogo} className='w-40 sm:w-50 cursor-pointer' alt="logo" onClick={() => navigate('/')} />
+        <div className="ml-auto px-5 sm:px-5">
+          <DarkModeToggler />
+        </div>
         {
           sidebar ? <X onClick={() => setSidebar(false)} className='w-6 h-6 text-gray-600 sm:hidden' />
             :
@@ -32,11 +36,11 @@ const Layout = () => {
 
     </div >
   ) :
-  (
-    <div className='flex items-center justify-center h-screen'>
-      <SignIn />
+    (
+      <div className='flex items-center justify-center h-screen'>
+        <SignIn />
       </div>
-  )
+    )
 }
 
 export default Layout

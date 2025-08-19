@@ -12,7 +12,7 @@ const Navbar = () => {
 
     return (
         <div className="fixed z-5 w-full backdrop-blur-2xl flex justify-between items-center py-3 px-4 sm:px-20 xl:px-32">
-            <img src={assets.logo} alt='' className="w-32 sm:w-40 cursor-pointer" onClick={() => navigate('/')} />
+            <img src={assets.ailogo} alt='' className="w-40 sm:w-50 cursor-pointer" onClick={() => navigate('/')} />
          <div className="ml-auto py-3 px-10 sm:px-5">
                     <DarkModeToggler />
                 </div>
