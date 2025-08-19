@@ -11,36 +11,41 @@ const Layout = () => {
   const [sidebar, setSidebar] = useState(false)
   const { user } = useUser()
 
-
   return user ? (
-    <div className='flex flex-col items-start justify-start h-screen'>
+    <div className='flex flex-col items-start justify-start h-screen bg-white dark:bg-gray-900'>
+      {/* Navbar */}
+      <nav className='w-full px-8 min-h-14 flex items-center justify-between border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900'>
+        <img
+          src={assets.ailogo}
+          className='w-40 sm:w-50 cursor-pointer'
+          alt="logo"
+          onClick={() => navigate('/')}
+        />
 
-      <nav className='w-full px-8 min-h-14 flex items-center justify-between border-b border-gray-200'>
-
-        < img src={assets.ailogo} className='w-40 sm:w-50 cursor-pointer' alt="logo" onClick={() => navigate('/')} />
         <div className="ml-auto px-5 sm:px-5">
           <DarkModeToggler />
         </div>
+
         {
-          sidebar ? <X onClick={() => setSidebar(false)} className='w-6 h-6 text-gray-600 sm:hidden' />
-            :
-            <Menu onClick={() => setSidebar(true)} className='w-6 h-6 text-gray-600 sm:hidden' />
+          sidebar
+            ? <X onClick={() => setSidebar(false)} className='w-6 h-6 text-gray-600 dark:text-gray-300 sm:hidden' />
+            : <Menu onClick={() => setSidebar(true)} className='w-6 h-6 text-gray-600 dark:text-gray-300 sm:hidden' />
         }
       </nav>
+
+      {/* Content */}
       <div className='flex-1 w-full flex h-[calc(100vh-14px)]'>
         <Sidebar sidebar={sidebar} setSidebar={setSidebar} />
-        <div className='flex-1 bg-[#F4F7FB]'>
+        <div className='flex-1 bg-[#F4F7FB] dark:bg-gray-800'>
           <Outlet />
         </div>
       </div>
-
-    </div >
-  ) :
-    (
-      <div className='flex items-center justify-center h-screen'>
-        <SignIn />
-      </div>
-    )
+    </div>
+  ) : (
+    <div className='flex items-center justify-center h-screen bg-white dark:bg-gray-900'>
+      <SignIn />
+    </div>
+  )
 }
 
 export default Layout
