@@ -13,6 +13,11 @@ import Community from './pages/Community'
 import { useAuth } from '@clerk/clerk-react'
 import { useEffect } from 'react'
 import { Toaster } from 'react-hot-toast'
+import GenerateStory from './pages/GenerateStory'
+import GenerateEmail from './pages/GenerateEmail'
+import SummarizeText from './pages/SummarizeText'
+import InterviewQA from './pages/InterviewQA'
+import PortfolioBio from './pages/PortfolioBio'
 
 const App = () => {
   // const { getToken } = useAuth()
@@ -32,7 +37,13 @@ const App = () => {
           <Route path="remove-background" element={<RemoveBackground />} />
           <Route path="remove-object" element={<RemoveObject />} />
           <Route path="review-resume" element={<ReviewResume />} />
+          <Route path="generate-story" element={<GenerateStory />} />
+          <Route path="generate-email" element={<GenerateEmail />} />
+          <Route path="summarize-text" element={<SummarizeText />} />
+          <Route path="interview-qa" element={<InterviewQA />} />
+          <Route path="portfolio-bio" element={<PortfolioBio />} />
           <Route path="community" element={<Community />} />
+
         </Route>
       </Routes>
     </div >
