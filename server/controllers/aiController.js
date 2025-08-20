@@ -6,10 +6,6 @@ import fs from 'fs'
 import pdf from 'pdf-parse/lib/pdf-parse.js'
 import { clerkClient } from "@clerk/express"
 
-
-
-
-
 const AI = new OpenAI({
     apiKey: process.env.GEMINI_API_KEY,
     baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/"
@@ -54,6 +50,7 @@ export const generateArticle = async (req, res) => {
         res.json({ success: false, message: error.message })
     }
 }
+
 export const generateBlogTitle = async (req, res) => {
     try {
         const { userId } = req.auth()
@@ -92,6 +89,7 @@ export const generateBlogTitle = async (req, res) => {
         res.json({ success: false, message: error.message })
     }
 }
+
 export const generateImage = async (req, res) => {
     try {
         const { userId } = req.auth()
@@ -124,6 +122,7 @@ export const generateImage = async (req, res) => {
         res.json({ success: false, message: error.message })
     }
 }
+
 export const removeImageBackground = async (req, res) => {
     try {
         const { userId } = req.auth()
@@ -153,6 +152,7 @@ export const removeImageBackground = async (req, res) => {
         res.json({ success: false, message: error.message })
     }
 }
+
 export const removeImageObject = async (req, res) => {
     try {
         const { userId } = req.auth()
@@ -217,6 +217,178 @@ export const resumeReview = async (req, res) => {
         const content = response.choices[0].message.content
 
         await sql`INSERT INTO creations (user_id, prompt, content, type) VALUES(${userId}, ${'Review the uploaded resume'}, ${content}, ${'resume-review'})`
+
+        res.json({ success: true, content })
+    } catch (error) {
+        console.log(error.message)
+        res.json({ success: false, message: error.message })
+    }
+}
+
+// NEW PREMIUM TOOLS
+
+export const generateStory = async (req, res) => {
+    try {
+        const { userId } = req.auth()
+        const { prompt, genre, length } = req.body
+        const plan = req.plan
+
+        if (plan !== 'premium') {
+            return res.json({ success: false, message: "This feature is only available for premium subscriptions." })
+        }
+
+        const storyPrompt = `Write a ${genre} story about ${prompt}. The story should be ${length} and engaging with proper character development and plot structure.`
+
+        const response = await AI.chat.completions.create({
+            model: "gemini-2.0-flash",
+            messages: [
+                {
+                    role: "user",
+                    content: storyPrompt,
+                },
+            ],
+            temperature: 0.8,
+            max_tokens: length === 'short' ? 800 : length === 'medium' ? 1200 : 1600,
+        });
+
+        const content = response.choices[0].message.content
+        await sql`INSERT INTO creations (user_id, prompt, content, type) VALUES (${userId}, ${storyPrompt}, ${content}, ${'story'})`
+
+        res.json({ success: true, content })
+    } catch (error) {
+        console.log(error.message)
+        res.json({ success: false, message: error.message })
+    }
+}
+
+export const generateEmail = async (req, res) => {
+    try {
+        const { userId } = req.auth()
+        const { prompt, tone, type } = req.body
+        const plan = req.plan
+
+        if (plan !== 'premium') {
+            return res.json({ success: false, message: "This feature is only available for premium subscriptions." })
+        }
+
+        const emailPrompt = `Write a ${tone} ${type} email about ${prompt}. Include proper email structure with subject line, greeting, body, and closing.`
+
+        const response = await AI.chat.completions.create({
+            model: "gemini-2.0-flash",
+            messages: [
+                {
+                    role: "user",
+                    content: emailPrompt,
+                },
+            ],
+            temperature: 0.7,
+            max_tokens: 800,
+        });
+
+        const content = response.choices[0].message.content
+        await sql`INSERT INTO creations (user_id, prompt, content, type) VALUES (${userId}, ${emailPrompt}, ${content}, ${'email'})`
+
+        res.json({ success: true, content })
+    } catch (error) {
+        console.log(error.message)
+        res.json({ success: false, message: error.message })
+    }
+}
+
+export const summarizeText = async (req, res) => {
+    try {
+        const { userId } = req.auth()
+        const { text, length } = req.body
+        const plan = req.plan
+
+        if (plan !== 'premium') {
+            return res.json({ success: false, message: "This feature is only available for premium subscriptions." })
+        }
+
+        const summaryPrompt = `Summarize the following text in ${length} length, maintaining the key points and main ideas:\n\n${text}`
+
+        const response = await AI.chat.completions.create({
+            model: "gemini-2.0-flash",
+            messages: [
+                {
+                    role: "user",
+                    content: summaryPrompt,
+                },
+            ],
+            temperature: 0.5,
+            max_tokens: length === 'brief' ? 200 : length === 'detailed' ? 400 : 300,
+        });
+
+        const content = response.choices[0].message.content
+        await sql`INSERT INTO creations (user_id, prompt, content, type) VALUES (${userId}, ${summaryPrompt}, ${content}, ${'summary'})`
+
+        res.json({ success: true, content })
+    } catch (error) {
+        console.log(error.message)
+        res.json({ success: false, message: error.message })
+    }
+}
+
+export const generateInterviewQA = async (req, res) => {
+    try {
+        const { userId } = req.auth()
+        const { jobRole, experience, count } = req.body
+        const plan = req.plan
+
+        if (plan !== 'premium') {
+            return res.json({ success: false, message: "This feature is only available for premium subscriptions." })
+        }
+
+        const interviewPrompt = `Generate ${count} interview questions and answers for a ${jobRole} position with ${experience} experience level. Include both technical and behavioral questions with detailed answers.`
+
+        const response = await AI.chat.completions.create({
+            model: "gemini-2.0-flash",
+            messages: [
+                {
+                    role: "user",
+                    content: interviewPrompt,
+                },
+            ],
+            temperature: 0.6,
+            max_tokens: 1500,
+        });
+
+        const content = response.choices[0].message.content
+        await sql`INSERT INTO creations (user_id, prompt, content, type) VALUES (${userId}, ${interviewPrompt}, ${content}, ${'interview-qa'})`
+
+        res.json({ success: true, content })
+    } catch (error) {
+        console.log(error.message)
+        res.json({ success: false, message: error.message })
+    }
+}
+
+export const generatePortfolioBio = async (req, res) => {
+    try {
+        const { userId } = req.auth()
+        const { name, profession, experience, skills, tone } = req.body
+        const plan = req.plan
+
+        if (plan !== 'premium') {
+            return res.json({ success: false, message: "This feature is only available for premium subscriptions." })
+        }
+
+        const bioPrompt = `Write a ${tone} portfolio bio for ${name}, a ${profession} with ${experience} years of experience. Key skills: ${skills}. Make it engaging and professional for portfolio/website use.`
+
+        const response = await AI.chat.completions.create({
+            model: "gemini-2.0-flash",
+            messages: [
+                {
+                    role: "user",
+                    content: bioPrompt,
+                },
+            ],
+            temperature: 0.7,
+            max_tokens: 600,
+        });
+
+        const content = response.choices[0].message.content
+        await sql`INSERT INTO creations (user_id, prompt, content, type) VALUES (${userId}, ${bioPrompt}, ${content}, ${'portfolio-bio'})`
 
         res.json({ success: true, content })
     } catch (error) {
