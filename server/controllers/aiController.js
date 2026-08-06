@@ -23,7 +23,7 @@ export const generateArticle = async (req, res) => {
 
         }
         const response = await AI.chat.completions.create({
-            model: "gemini-2.0-flash",
+            model: "gemini-3.6-flash",
             messages: [
                 // { role: "system", content: "You are a helpful assistant." },
                 {
@@ -63,7 +63,7 @@ export const generateBlogTitle = async (req, res) => {
 
         }
         const response = await AI.chat.completions.create({
-            model: "gemini-2.0-flash",
+            model: "gemini-3.6-flash",
             messages: [
                 {
                     role: "user",
@@ -204,7 +204,7 @@ export const resumeReview = async (req, res) => {
         const prompt = `Review the following resume and provide constructive feedback on its strengths, weaknesses, and areas for improvement. Resume Content:\n\n${pdfData.text}`
 
         const response = await AI.chat.completions.create({
-            model: "gemini-2.0-flash",
+            model: "gemini-3.6-flash",
             messages: [
                 {
                     role: "user",
@@ -240,7 +240,7 @@ export const generateStory = async (req, res) => {
         const storyPrompt = `Write a ${genre} story about ${prompt}. The story should be ${length} and engaging with proper character development and plot structure.`
 
         const response = await AI.chat.completions.create({
-            model: "gemini-2.0-flash",
+            model: "gemini-3.6-flash",
             messages: [
                 {
                     role: "user",
@@ -274,7 +274,7 @@ export const generateEmail = async (req, res) => {
         const emailPrompt = `Write a ${tone} ${type} email about ${prompt}. Include proper email structure with subject line, greeting, body, and closing.`
 
         const response = await AI.chat.completions.create({
-            model: "gemini-2.0-flash",
+            model: "gemini-3.6-flash",
             messages: [
                 {
                     role: "user",
@@ -308,7 +308,7 @@ export const summarizeText = async (req, res) => {
         const summaryPrompt = `Summarize the following text in ${length} length, maintaining the key points and main ideas:\n\n${text}`
 
         const response = await AI.chat.completions.create({
-            model: "gemini-2.0-flash",
+            model: "gemini-3.6-flash",
             messages: [
                 {
                     role: "user",
@@ -342,7 +342,7 @@ export const generateInterviewQA = async (req, res) => {
         const interviewPrompt = `Generate ${count} interview questions and answers for a ${jobRole} position with ${experience} experience level. Include both technical and behavioral questions with detailed answers.`
 
         const response = await AI.chat.completions.create({
-            model: "gemini-2.0-flash",
+            model: "gemini-3.6-flash",
             messages: [
                 {
                     role: "user",
@@ -376,7 +376,7 @@ export const generatePortfolioBio = async (req, res) => {
         const bioPrompt = `Write a ${tone} portfolio bio for ${name}, a ${profession} with ${experience} years of experience. Key skills: ${skills}. Make it engaging and professional for portfolio/website use.`
 
         const response = await AI.chat.completions.create({
-            model: "gemini-2.0-flash",
+            model: "gemini-3.6-flash",
             messages: [
                 {
                     role: "user",
