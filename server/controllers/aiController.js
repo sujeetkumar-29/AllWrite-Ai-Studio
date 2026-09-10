@@ -11,6 +11,8 @@ const AI = new OpenAI({
     baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/"
 });
 
+const DEFAULT_MODEL = "gemini-3.8-flash";
+
 export const generateArticle = async (req, res) => {
     try {
         const { userId } = req.auth()
@@ -20,20 +22,22 @@ export const generateArticle = async (req, res) => {
 
         if (plan !== 'premium' && free_usage >= 10) {
             return res.json({ success: false, message: "Limit reached. Upgrade to continue," })
-
         }
+
+        const tokenLimit = length ? Math.max(Number(length) + 1500, 3000) : 4000;
+
         const response = await AI.chat.completions.create({
-            model: "gemini-3.8-flash",
+            model: DEFAULT_MODEL,
             messages: [
-                // { role: "system", content: "You are a helpful assistant." },
                 {
                     role: "user",
                     content: prompt,
                 },
             ],
             temperature: 0.7,
-            max_tokens: length,
+            max_tokens: tokenLimit,
         });
+
         const content = response.choices[0].message.content
         await sql`INSERT INTO creations (user_id, prompt, content, type) VALUES (${userId}, ${prompt}, ${content}, ${'article'})`
 
@@ -60,10 +64,10 @@ export const generateBlogTitle = async (req, res) => {
 
         if (plan !== 'premium' && free_usage >= 10) {
             return res.json({ success: false, message: "Limit reached. Upgrade to continue," })
-
         }
+
         const response = await AI.chat.completions.create({
-            model: "gemini-3.8-flash",
+            model: DEFAULT_MODEL,
             messages: [
                 {
                     role: "user",
@@ -71,8 +75,9 @@ export const generateBlogTitle = async (req, res) => {
                 },
             ],
             temperature: 0.7,
-            max_tokens: 100,
+            max_tokens: 1500,
         });
+
         const content = response.choices[0].message.content
         await sql`INSERT INTO creations (user_id, prompt, content, type) VALUES (${userId}, ${prompt}, ${content}, ${'blog-title'})`
 
@@ -95,11 +100,9 @@ export const generateImage = async (req, res) => {
         const { userId } = req.auth()
         const { prompt, publish } = req.body
         const plan = req.plan
-        // const free_usage = req.free_usage
 
         if (plan !== 'premium') {
             return res.json({ success: false, message: "This feature is only available for premium subscriptions." })
-
         }
 
         const formData = new FormData()
@@ -110,9 +113,7 @@ export const generateImage = async (req, res) => {
         })
 
         const base64Image = `data:image/png;base64,${Buffer.from(data, 'binary').toString('base64')}`
-
         const { secure_url } = await cloudinary.uploader.upload(base64Image)
-
 
         await sql`INSERT INTO creations (user_id, prompt, content, type,publish) VALUES (${userId}, ${prompt}, ${secure_url}, ${'image'},${publish ?? false})`
 
@@ -127,7 +128,6 @@ export const removeImageBackground = async (req, res) => {
     try {
         const { userId } = req.auth()
         const image = req.file;
-
         const plan = req.plan
 
         if (plan !== 'premium') {
@@ -143,7 +143,6 @@ export const removeImageBackground = async (req, res) => {
             ]
         })
 
-
         await sql`INSERT INTO creations (user_id, prompt, content, type) VALUES (${userId}, ${'Remove background from image'}, ${secure_url}, ${'image'})`
 
         res.json({ success: true, content: secure_url })
@@ -158,7 +157,6 @@ export const removeImageObject = async (req, res) => {
         const { userId } = req.auth()
         const { object } = req.body
         const image = req.file;
-
         const plan = req.plan
 
         if (plan !== 'premium') {
@@ -187,7 +185,6 @@ export const resumeReview = async (req, res) => {
     try {
         const { userId } = req.auth()
         const resume = req.file;
-
         const plan = req.plan
 
         if (plan !== 'premium') {
@@ -204,7 +201,7 @@ export const resumeReview = async (req, res) => {
         const prompt = `Review the following resume and provide constructive feedback on its strengths, weaknesses, and areas for improvement. Resume Content:\n\n${pdfData.text}`
 
         const response = await AI.chat.completions.create({
-            model: "gemini-3.8-flash",
+            model: DEFAULT_MODEL,
             messages: [
                 {
                     role: "user",
@@ -212,10 +209,10 @@ export const resumeReview = async (req, res) => {
                 },
             ],
             temperature: 0.7,
-            max_tokens: 1000,
+            max_tokens: 3500,
         });
-        const content = response.choices[0].message.content
 
+        const content = response.choices[0].message.content
         await sql`INSERT INTO creations (user_id, prompt, content, type) VALUES(${userId}, ${'Review the uploaded resume'}, ${content}, ${'resume-review'})`
 
         res.json({ success: true, content })
@@ -224,8 +221,6 @@ export const resumeReview = async (req, res) => {
         res.json({ success: false, message: error.message })
     }
 }
-
-// NEW PREMIUM TOOLS
 
 export const generateStory = async (req, res) => {
     try {
@@ -240,7 +235,7 @@ export const generateStory = async (req, res) => {
         const storyPrompt = `Write a ${genre} story about ${prompt}. The story should be ${length} and engaging with proper character development and plot structure.`
 
         const response = await AI.chat.completions.create({
-            model: "gemini-3.8-flash",
+            model: DEFAULT_MODEL,
             messages: [
                 {
                     role: "user",
@@ -248,7 +243,7 @@ export const generateStory = async (req, res) => {
                 },
             ],
             temperature: 0.8,
-            max_tokens: length === 'short' ? 800 : length === 'medium' ? 1200 : 1600,
+            max_tokens: length === 'short' ? 2500 : length === 'medium' ? 3500 : 4500,
         });
 
         const content = response.choices[0].message.content
@@ -274,7 +269,7 @@ export const generateEmail = async (req, res) => {
         const emailPrompt = `Write a ${tone} ${type} email about ${prompt}. Include proper email structure with subject line, greeting, body, and closing.`
 
         const response = await AI.chat.completions.create({
-            model: "gemini-3.8-flash",
+            model: DEFAULT_MODEL,
             messages: [
                 {
                     role: "user",
@@ -282,7 +277,7 @@ export const generateEmail = async (req, res) => {
                 },
             ],
             temperature: 0.7,
-            max_tokens: 800,
+            max_tokens: 3000,
         });
 
         const content = response.choices[0].message.content
@@ -308,7 +303,7 @@ export const summarizeText = async (req, res) => {
         const summaryPrompt = `Summarize the following text in ${length} length, maintaining the key points and main ideas:\n\n${text}`
 
         const response = await AI.chat.completions.create({
-            model: "gemini-3.8-flash",
+            model: DEFAULT_MODEL,
             messages: [
                 {
                     role: "user",
@@ -316,7 +311,7 @@ export const summarizeText = async (req, res) => {
                 },
             ],
             temperature: 0.5,
-            max_tokens: length === 'brief' ? 200 : length === 'detailed' ? 400 : 300,
+            max_tokens: length === 'brief' ? 1500 : length === 'detailed' ? 2500 : 2000,
         });
 
         const content = response.choices[0].message.content
@@ -342,7 +337,7 @@ export const generateInterviewQA = async (req, res) => {
         const interviewPrompt = `Generate ${count} interview questions and answers for a ${jobRole} position with ${experience} experience level. Include both technical and behavioral questions with detailed answers.`
 
         const response = await AI.chat.completions.create({
-            model: "gemini-3.8-flash",
+            model: DEFAULT_MODEL,
             messages: [
                 {
                     role: "user",
@@ -350,7 +345,7 @@ export const generateInterviewQA = async (req, res) => {
                 },
             ],
             temperature: 0.6,
-            max_tokens: 1500,
+            max_tokens: 4000,
         });
 
         const content = response.choices[0].message.content
@@ -376,7 +371,7 @@ export const generatePortfolioBio = async (req, res) => {
         const bioPrompt = `Write a ${tone} portfolio bio for ${name}, a ${profession} with ${experience} years of experience. Key skills: ${skills}. Make it engaging and professional for portfolio/website use.`
 
         const response = await AI.chat.completions.create({
-            model: "gemini-3.8-flash",
+            model: DEFAULT_MODEL,
             messages: [
                 {
                     role: "user",
@@ -384,7 +379,7 @@ export const generatePortfolioBio = async (req, res) => {
                 },
             ],
             temperature: 0.7,
-            max_tokens: 600,
+            max_tokens: 2000,
         });
 
         const content = response.choices[0].message.content
